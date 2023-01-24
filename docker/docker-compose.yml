@@ -1,36 +1,36 @@
 version: '3.8'
 
 networks:
-  posts-crud:
-    name: posts-crud
+    news-crud:
+        name: news-crud
 
 services:
-  adminer:
-    image: adminer
-    container_name: posts-crud-adminer
-    networks:
-      - posts-crud
-    environment:
-      ADMINER_PLUGINS: tables-filter tinymce
-      ADMINER_DESIGN: lucas-sandery
-    restart: always
-    ports:
-      - ${ADMINER_PORT}:8080
-    depends_on:
-      - postgres
+    adminer:
+        image: adminer
+        container_name: news-crud-adminer
+        networks:
+            - news-crud
+        environment:
+            ADMINER_PLUGINS: tables-filter tinymce
+            ADMINER_DESIGN: lucas-sandery
+        restart: always
+        ports:
+            - ${ADMINER_PORT}:8080
+        depends_on:
+            - postgres
 
-  postgres:
-    image: postgres:13.1
-    container_name: posts-crud-postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    networks:
-      - posts-crud
-    volumes:
-      - ${VOLUME_PATH}/postgres:/var/lib/postgresql/data
-      - ${CONFIG_PATH}/postgresql.conf:/etc/postgresql/postgresql.conf
-    restart: always
-    ports:
-      - ${POSTGRES_PORT}:5432
+    postgres:
+        image: postgres:13.1
+        container_name: news-crud-postgres
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        networks:
+            - news-crud
+        volumes:
+            - ${VOLUME_PATH}/postgres:/var/lib/postgresql/data
+            - ${CONFIG_PATH}/postgresql.conf:/etc/postgresql/postgresql.conf
+        restart: always
+        ports:
+            - ${POSTGRES_PORT}:5432
