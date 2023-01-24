@@ -25,7 +25,9 @@ export class NewsControllerV1 {
 
     @Post('create')
     async create(@Body() body: NewsDTO): Promise<News> {
-        return await this._newsService.create(body)
+        const userId = 1
+
+        return await this._newsService.create(userId, body)
     }
 
     @Post('update')

@@ -32,18 +32,18 @@ export class NewsService {
         return this._mappingNews(news)
     }
 
-    async create(payload: Omit<News, 'id' | 'publishedAt'>): Promise<News> {
-        const newNews = this._newsRepository.create(payload)
+    async create(userId: number, payload: Omit<News, 'id' | 'publishedAt' | 'author'>): Promise<News> {
+        const newNews = this._newsRepository.create({ ...payload, user: { id: userId } })
         await this._newsRepository.save(newNews)
 
         return this._mappingNews(newNews)
     }
 
-    async update(id: number, payload: Omit<News, 'id' | 'publishedAt'>): Promise<News> {
+    async update(id: number, payload: Omit<News, 'id' | 'publishedAt' | 'author'>): Promise<News> {
         const news = await this.findOne(id)
         await this._newsRepository.save({ id, ...payload })
 
-        return { id, ...payload, publishedAt: news.publishedAt }
+        return { id, ...payload, publishedAt: news.publishedAt, author: news.author }
     }
 
     async delete(id: number): Promise<boolean> {
@@ -54,13 +54,21 @@ export class NewsService {
     }
 
     private _mappingNews(news: NewsEntity): News {
-        const { id, title, description, content, createdAt: publishedAt } = news
+        const {
+            id,
+            title,
+            description,
+            content,
+            createdAt: publishedAt,
+            user: { login },
+        } = news
 
         return {
             id,
             title,
             description,
             content,
+            author: login,
             publishedAt,
         }
     }
