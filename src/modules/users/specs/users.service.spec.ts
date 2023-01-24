@@ -27,7 +27,7 @@ describe('UsersService', () => {
 
             jest.spyOn(service['_usersRepository'], 'findOne').mockResolvedValue(userEntityMock)
 
-            const user = await service.findOne(userId)
+            const user = await service.findOne({ id: userId })
 
             expect(service['_usersRepository'].findOne).toHaveBeenCalledTimes(1)
             expect(user).toEqual(userEntityMock)
@@ -38,7 +38,7 @@ describe('UsersService', () => {
 
             jest.spyOn(service['_usersRepository'], 'findOne').mockResolvedValue(null)
 
-            expect(service.findOne(userId)).rejects.toThrow('USER_NOT_FOUND')
+            expect(service.findOne({ id: userId })).rejects.toThrow('USER_NOT_FOUND')
             expect(service['_usersRepository'].findOne).toHaveBeenCalledTimes(1)
         })
     })

@@ -6,6 +6,7 @@ export const userEntityMock: UsersEntity = {
     login: 'Login123',
     email: 'email@email.com',
     password: 'XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=',
+    refreshToken: null,
     createdAt: dateMock,
     updatedAt: dateMock,
     deletedAt: null,

@@ -1,6 +1,9 @@
 import { Controller, UseFilters, Get, Post, Body, Delete, Param } from '@nestjs/common'
+import { GetUserId } from '../../../shared/decorators/get-user-id.decorator'
+import { IsPublic } from '../../../shared/decorators/is-public.decorator'
 import { News } from '../services/interfaces/news.interface'
 import { NewsService } from '../services/news.service'
+import { NewsUpdateDTO } from './dtos/news-update.dto'
 import { NewsDTO } from './dtos/news.dto'
 
 @Controller({
@@ -11,11 +14,13 @@ import { NewsDTO } from './dtos/news.dto'
 export class NewsControllerV1 {
     constructor(private readonly _newsService: NewsService) {}
 
+    @IsPublic()
     @Get()
     async getList(): Promise<News[]> {
         return await this._newsService.find()
     }
 
+    @IsPublic()
     @Get(':id')
     async getNews(@Param() params: { id: number }): Promise<News> {
         const { id } = params
@@ -24,14 +29,12 @@ export class NewsControllerV1 {
     }
 
     @Post('create')
-    async create(@Body() body: NewsDTO): Promise<News> {
-        const userId = 1
-
+    async create(@GetUserId() userId: number, @Body() body: NewsDTO): Promise<News> {
         return await this._newsService.create(userId, body)
     }
 
     @Post('update')
-    async update(@Body() body: NewsDTO): Promise<News> {
+    async update(@Body() body: NewsUpdateDTO): Promise<News> {
         const { id, ...data } = body
 
         return await this._newsService.update(id, data)

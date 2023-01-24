@@ -1,12 +1,12 @@
 import { Transform } from 'class-transformer'
+import { IsEmail, MinLength } from 'class-validator'
 
-export class NewsDTO {
+export class AuthDTO {
+    @IsEmail()
     @Transform(({ value }) => value.toLowerCase())
-    title: string
+    email: string
 
+    @MinLength(8)
     @Transform(({ value }) => value.toLowerCase())
-    description: string
-
-    @Transform(({ value }) => value.toLowerCase())
-    content: string
+    password: string
 }

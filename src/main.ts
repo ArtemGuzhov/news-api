@@ -23,7 +23,11 @@ async function bootstrap() {
         type: VersioningType.URI,
     })
     app.enableCors(corsConfig)
-    app.useGlobalPipes(new ValidationPipe())
+    app.useGlobalPipes(
+        new ValidationPipe({
+            forbidUnknownValues: false,
+        }),
+    )
 
     await app.listen(port, host, () => logger.log(`Server running at http://${host}:${port}`))
 }
