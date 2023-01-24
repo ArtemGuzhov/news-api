@@ -1,11 +1,12 @@
 import { NewsService } from '../services/news.service'
 import { Test, TestingModule } from '@nestjs/testing'
-import { EntityManager, Repository } from 'typeorm'
+import { EntityManager } from 'typeorm'
 import { newsEntityMock } from './mocks/news-entity.mock'
 import { createMock } from '@golevelup/ts-jest'
 import { newsMappedMock } from './mocks/news-mapped.mock'
 import { updatedNewsMappedMock } from './mocks/updated-news-mapped'
 import { NotFoundException } from '@nestjs/common'
+import { userEntityMock } from '../../users/specs/mocks/user-entity.mock'
 
 describe('NewsService', () => {
     let service: NewsService
@@ -54,7 +55,7 @@ describe('NewsService', () => {
             expect(news).toEqual(newsMappedMock)
         })
 
-        it('throw NotFoundException error', async () => {
+        it('throw NEWS_NOT_FOUND error', async () => {
             const { id } = newsEntityMock
 
             jest.spyOn(service['_newsRepository'], 'findOne').mockResolvedValue(null)
@@ -65,13 +66,15 @@ describe('NewsService', () => {
     })
 
     describe('create', () => {
-        it('should create news', async () => {
+        it('should return created news', async () => {
+            const userId = userEntityMock.id
+
             jest.spyOn(service['_newsRepository'], 'create').mockReturnValue(newsEntityMock)
             jest.spyOn(service['_newsRepository'], 'save').getMockImplementation()
 
             const { title, description, content } = newsMappedMock
 
-            const news = await service.create({ title, description, content })
+            const news = await service.create(userId, { title, description, content })
 
             expect(service['_newsRepository'].create).toHaveBeenCalledTimes(1)
             expect(service['_newsRepository'].save).toHaveBeenCalledTimes(1)
@@ -80,7 +83,7 @@ describe('NewsService', () => {
     })
 
     describe('update', () => {
-        it('should update news', async () => {
+        it('should return updated news', async () => {
             const { id } = newsMappedMock
 
             jest.spyOn(service, 'findOne').mockResolvedValue(newsMappedMock)
@@ -95,7 +98,7 @@ describe('NewsService', () => {
             expect(news).toEqual(updatedNewsMappedMock)
         })
 
-        it('throw NotFoundException error', async () => {
+        it('throw NEWS_NOT_FOUND error', async () => {
             const { id } = newsMappedMock
 
             jest.spyOn(service, 'findOne').mockImplementation(() => {
@@ -111,7 +114,7 @@ describe('NewsService', () => {
     })
 
     describe('delete', () => {
-        it('should delete news', async () => {
+        it('should deleted news', async () => {
             const { id } = newsMappedMock
 
             jest.spyOn(service, 'findOne').mockResolvedValue(newsMappedMock)
@@ -124,7 +127,7 @@ describe('NewsService', () => {
             expect(news).toEqual(true)
         })
 
-        it('throw NotFoundException error', async () => {
+        it('throw NEWS_NOT_FOUND error', async () => {
             const { id } = newsMappedMock
 
             jest.spyOn(service, 'findOne').mockImplementation(() => {

@@ -1,5 +1,6 @@
 import { NewsEntity } from '../../entities/news.entity'
 import { dateMock } from '../../../../shared/mocks/date.mock'
+import { userEntityMock } from '../../../users/specs/mocks/user-entity.mock'
 
 export const newsEntityMock: NewsEntity = {
     id: 1,
@@ -9,4 +10,5 @@ export const newsEntityMock: NewsEntity = {
     createdAt: dateMock,
     updatedAt: dateMock,
     deletedAt: null,
+    user: userEntityMock,
 }

@@ -5,6 +5,7 @@ import { newsMappedMock } from './mocks/news-mapped.mock'
 import { updatedNewsMappedMock } from './mocks/updated-news-mapped'
 import { NotFoundException } from '@nestjs/common'
 import { NewsControllerV1 } from '../controllers/news.controller.v1'
+import { userEntityMock } from '../../users/specs/mocks/user-entity.mock'
 
 describe('NewsControllerV1', () => {
     let controller: NewsControllerV1
@@ -59,7 +60,7 @@ describe('NewsControllerV1', () => {
             expect(news).toEqual(newsMappedMock)
         })
 
-        it('throw NotFoundException error', async () => {
+        it('throw NEWS_NOT_FOUND error', async () => {
             const { id } = newsMappedMock
 
             jest.spyOn(service, 'findOne').mockImplementation(() => {
@@ -73,11 +74,13 @@ describe('NewsControllerV1', () => {
 
     describe('create', () => {
         it('should create news', async () => {
+            const userId = userEntityMock.id
+
             jest.spyOn(service, 'create').mockResolvedValue(newsMappedMock)
 
             const { title, description, content } = newsMappedMock
 
-            const news = await service.create({ title, description, content })
+            const news = await service.create(userId, { title, description, content })
 
             expect(service.create).toHaveBeenCalledTimes(1)
             expect(news).toEqual(newsMappedMock)
@@ -98,7 +101,7 @@ describe('NewsControllerV1', () => {
             expect(news).toEqual(updatedNewsMappedMock)
         })
 
-        it('throw NotFoundException error', async () => {
+        it('throw NEWS_NOT_FOUND error', async () => {
             const { id } = newsMappedMock
 
             jest.spyOn(service, 'update').mockImplementation(() => {
@@ -124,7 +127,7 @@ describe('NewsControllerV1', () => {
             expect(news).toEqual(true)
         })
 
-        it('throw NotFoundException error', async () => {
+        it('throw NEWS_NOT_FOUND error', async () => {
             const { id } = newsMappedMock
 
             jest.spyOn(service, 'delete').mockImplementation(() => {

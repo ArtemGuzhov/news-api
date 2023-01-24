@@ -1,6 +1,6 @@
 import helmet from 'helmet'
 
-import { VersioningType } from '@nestjs/common'
+import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { environment } from 'environment'
 import { Logardian } from 'logardian'
@@ -23,6 +23,7 @@ async function bootstrap() {
         type: VersioningType.URI,
     })
     app.enableCors(corsConfig)
+    app.useGlobalPipes(new ValidationPipe())
 
     await app.listen(port, host, () => logger.log(`Server running at http://${host}:${port}`))
 }
