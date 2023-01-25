@@ -23,22 +23,44 @@ describe('UsersService', () => {
 
     describe('findOne', () => {
         it('should return user', async () => {
-            const userId = userEntityMock.id
+            const { id } = userEntityMock
 
             jest.spyOn(service['_usersRepository'], 'findOne').mockResolvedValue(userEntityMock)
 
-            const user = await service.findOne({ id: userId })
+            const user = await service.findOne({ id })
 
             expect(service['_usersRepository'].findOne).toHaveBeenCalledTimes(1)
             expect(user).toEqual(userEntityMock)
         })
 
-        it('throw USER_NOT_FOUND error', async () => {
-            const userId = userEntityMock.id
+        it('throw USER_NOT_FOUND error if empty paylaod', async () => {
+            expect(service.findOne({})).rejects.toThrow('USER_NOT_FOUND')
+        })
+
+        it('throw USER_NOT_FOUND error when find by id', async () => {
+            const { id } = userEntityMock
 
             jest.spyOn(service['_usersRepository'], 'findOne').mockResolvedValue(null)
 
-            expect(service.findOne({ id: userId })).rejects.toThrow('USER_NOT_FOUND')
+            expect(service.findOne({ id })).rejects.toThrow('USER_NOT_FOUND')
+            expect(service['_usersRepository'].findOne).toHaveBeenCalledTimes(1)
+        })
+
+        it('throw USER_NOT_FOUND error when find by email', async () => {
+            const { email } = userEntityMock
+
+            jest.spyOn(service['_usersRepository'], 'findOne').mockResolvedValue(null)
+
+            expect(service.findOne({ email })).rejects.toThrow('USER_NOT_FOUND')
+            expect(service['_usersRepository'].findOne).toHaveBeenCalledTimes(1)
+        })
+
+        it('throw USER_NOT_FOUND error when find by login', async () => {
+            const { login } = userEntityMock
+
+            jest.spyOn(service['_usersRepository'], 'findOne').mockResolvedValue(null)
+
+            expect(service.findOne({ login })).rejects.toThrow('USER_NOT_FOUND')
             expect(service['_usersRepository'].findOne).toHaveBeenCalledTimes(1)
         })
     })
@@ -78,11 +100,13 @@ describe('UsersService', () => {
 
             const user = await service.create(userPayloadMock)
 
-            expect(user).toEqual(userMappedMock)
+            const { id, email, login } = userMappedMock
+
             expect(service['_isExistEmail']).toHaveBeenCalledTimes(1)
             expect(service['_isExistLogin']).toHaveBeenCalledTimes(1)
             expect(service['_usersRepository'].create).toHaveBeenCalledTimes(1)
             expect(service['_usersRepository'].save).toHaveBeenCalledTimes(1)
+            expect(user).toEqual({ id, email, login })
         })
     })
 })
