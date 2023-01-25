@@ -12,6 +12,5 @@ export class UserDTO {
     login: string
 
     @MinLength(8)
-    @Transform(({ value }) => value.toLowerCase())
     password: string
 }

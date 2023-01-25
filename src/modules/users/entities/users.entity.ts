@@ -13,6 +13,9 @@ export class UsersEntity extends CommonBaseEntity {
     @Column({ type: 'text' })
     password: string
 
+    @Column({ type: 'text', nullable: true })
+    refreshToken: string | null
+
     @OneToMany(() => NewsEntity, news => news.user)
     @JoinColumn({ name: 'news_id' })
     news: NewsEntity[]

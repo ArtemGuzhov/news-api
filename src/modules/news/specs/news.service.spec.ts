@@ -7,13 +7,19 @@ import { newsMappedMock } from './mocks/news-mapped.mock'
 import { updatedNewsMappedMock } from './mocks/updated-news-mapped'
 import { NotFoundException } from '@nestjs/common'
 import { userEntityMock } from '../../users/specs/mocks/user-entity.mock'
+import { UsersService } from '../../users/services/users.service'
 
 describe('NewsService', () => {
     let service: NewsService
 
     beforeEach(async () => {
         const moduleRef: TestingModule = await Test.createTestingModule({
-            providers: [NewsService, { provide: EntityManager, useValue: createMock<EntityManager>() }],
+            imports: [],
+            providers: [
+                NewsService,
+                { provide: EntityManager, useValue: createMock<EntityManager>() },
+                { provide: UsersService, useValue: createMock<UsersService>() },
+            ],
         }).compile()
 
         service = moduleRef.get<NewsService>(NewsService)
@@ -70,6 +76,7 @@ describe('NewsService', () => {
             const userId = userEntityMock.id
 
             jest.spyOn(service['_newsRepository'], 'create').mockReturnValue(newsEntityMock)
+            jest.spyOn(service['_usersService'], 'findOne').mockResolvedValue(userEntityMock)
             jest.spyOn(service['_newsRepository'], 'save').getMockImplementation()
 
             const { title, description, content } = newsMappedMock
