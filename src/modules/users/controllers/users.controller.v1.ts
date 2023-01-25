@@ -2,7 +2,7 @@ import { Controller, UseFilters, Post, Body } from '@nestjs/common'
 import { IsPublic } from '../../../shared/decorators/is-public.decorator'
 import { User } from '../services/interfaces/user.interface'
 import { UsersService } from '../services/users.service'
-import { UserDTO } from './dtos/user.dto'
+import { UserRegisterDTO } from './dtos/user-register.dto'
 
 @Controller({
     version: '1',
@@ -14,7 +14,7 @@ export class UsersControllerV1 {
 
     @IsPublic()
     @Post('register')
-    async register(@Body() body: UserDTO): Promise<Omit<User, 'password' | 'refreshToken'>> {
+    async register(@Body() body: UserRegisterDTO): Promise<Omit<User, 'password' | 'refreshToken'>> {
         return await this._usersService.create(body)
     }
 }

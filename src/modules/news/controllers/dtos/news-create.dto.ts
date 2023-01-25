@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer'
 
-export class NewsDTO {
+export class NewsCreateDTO {
     @Transform(({ value }) => value.toLowerCase())
     title: string
 
