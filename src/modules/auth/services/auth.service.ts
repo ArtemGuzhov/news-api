@@ -12,11 +12,9 @@ export class AuthService {
     async auth(email: string, password: string): Promise<Tokens> {
         const user = await this._usersService.findOne({ email })
 
-        const isMatch = compareHashes(password, user.password)
+        const isMatch = await compareHashes(password, user.password)
 
-        if (!isMatch) {
-            throw new BadRequestException(ErrorsEnum.INCORRECT_EMAIL_OR_PASSWORD)
-        }
+        if (!isMatch) throw new BadRequestException(ErrorsEnum.INCORRECT_EMAIL_OR_PASSWORD)
 
         const tokens = await this._jwtTokensService.getTokens(user.id)
         await this._jwtTokensService.updateRefreshTokenHash(user.id, tokens.refreshToken)

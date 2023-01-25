@@ -26,19 +26,19 @@ export class UsersService {
         if (id) {
             const user = await this._usersRepository.findOne({ where: { id } })
 
-            return user
+            if (user !== null) return user
         }
 
         if (email) {
             const user = await this._usersRepository.findOne({ where: { email } })
 
-            return user
+            if (user !== null) return user
         }
 
         if (login) {
             const user = await this._usersRepository.findOne({ where: { login } })
 
-            return user
+            if (user !== null) return user
         }
 
         throw new NotFoundException(ErrorsEnum.USER_NOT_FOUND)
@@ -47,15 +47,11 @@ export class UsersService {
     async update(id: number, payload: UserUpdatePayload): Promise<Omit<User, 'password'>> {
         const isExistEmail = payload.email ? await this._isExistEmail(payload.email) : false
 
-        if (isExistEmail) {
-            throw new BadRequestException(ErrorsEnum.USER_WITH_THIS_EMAIL_ALREADY_EXIST)
-        }
+        if (isExistEmail) throw new BadRequestException(ErrorsEnum.USER_WITH_THIS_EMAIL_ALREADY_EXIST)
 
         const isExistLogin = payload.login ? await this._isExistLogin(payload.login) : false
 
-        if (isExistLogin) {
-            throw new BadRequestException(ErrorsEnum.USER_WITH_THIS_LOGIN_ALREADY_EXIST)
-        }
+        if (isExistLogin) throw new BadRequestException(ErrorsEnum.USER_WITH_THIS_LOGIN_ALREADY_EXIST)
 
         if (payload.password) {
             const hashPassword = await getHash(payload.password)
@@ -73,15 +69,11 @@ export class UsersService {
 
         const isExistEmail = await this._isExistEmail(payload.email)
 
-        if (isExistEmail) {
-            throw new BadRequestException(ErrorsEnum.USER_WITH_THIS_EMAIL_ALREADY_EXIST)
-        }
+        if (isExistEmail) throw new BadRequestException(ErrorsEnum.USER_WITH_THIS_EMAIL_ALREADY_EXIST)
 
         const isExistLogin = await this._isExistLogin(payload.login)
 
-        if (isExistLogin) {
-            throw new BadRequestException(ErrorsEnum.USER_WITH_THIS_LOGIN_ALREADY_EXIST)
-        }
+        if (isExistLogin) throw new BadRequestException(ErrorsEnum.USER_WITH_THIS_LOGIN_ALREADY_EXIST)
 
         const hashPass = await getHash(payload.password)
 
@@ -102,16 +94,10 @@ export class UsersService {
     }
 
     private _checkPayload({ email, login, password }: Omit<User, 'id' | 'refreshToken'>): void {
-        if (!EmailRegExp.test(email)) {
-            throw new BadRequestException(ErrorsEnum.INCORRECT_EMAIL)
-        }
+        if (!EmailRegExp.test(email)) throw new BadRequestException(ErrorsEnum.INCORRECT_EMAIL)
 
-        if (!LoginRegExp.test(login)) {
-            throw new BadRequestException(ErrorsEnum.INCORRECT_LOGIN)
-        }
+        if (!LoginRegExp.test(login)) throw new BadRequestException(ErrorsEnum.INCORRECT_LOGIN)
 
-        if (!PasswordRegExp.test(password)) {
-            throw new BadRequestException(ErrorsEnum.NOT_A_STRONG_PASSWORD)
-        }
+        if (!PasswordRegExp.test(password)) throw new BadRequestException(ErrorsEnum.NOT_A_STRONG_PASSWORD)
     }
 }

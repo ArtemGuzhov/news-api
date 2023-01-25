@@ -4,7 +4,6 @@ import { environment } from '../../../environment'
 import { ErrorsEnum } from '../../../shared/enums/errors.enum'
 import { compareHashes } from '../../../shared/helpers/compare-hashes.helper'
 import { getHash } from '../../../shared/helpers/get-hash.helper'
-import { UsersEntity } from '../../users/entities/users.entity'
 import { UsersService } from '../../users/services/users.service'
 import { JwtPayload } from './interfaces/jwt-payload.interface'
 import { Tokens } from './interfaces/tokens.interface'
@@ -14,13 +13,7 @@ export class JwtTokensService {
     constructor(private readonly _usersService: UsersService, private readonly _jwtService: JwtService) {}
 
     async refreshTokens(id: number, refreshToken: string): Promise<Tokens> {
-        let user: UsersEntity
-
-        try {
-            user = await this._usersService.findOne({ id })
-        } catch {
-            throw new ForbiddenException(ErrorsEnum.ACCESS_DENIED)
-        }
+        const user = await this._usersService.findOne({ id })
 
         if (!user.refreshToken) throw new ForbiddenException(ErrorsEnum.ACCESS_DENIED)
 

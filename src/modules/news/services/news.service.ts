@@ -31,9 +31,7 @@ export class NewsService {
     async findOne(id: number): Promise<News> {
         const news = await this._newsRepository.findOne({ where: { id } })
 
-        if (news === null) {
-            throw new NotFoundException(ErrorsEnum.NEWS_NOT_FOUND)
-        }
+        if (news === null) throw new NotFoundException(ErrorsEnum.NEWS_NOT_FOUND)
 
         return this._mappingNews(news)
     }

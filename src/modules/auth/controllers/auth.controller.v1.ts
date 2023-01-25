@@ -16,19 +16,19 @@ import { AuthDTO } from './dtos/auth.dto'
 export class AuthControllerV1 {
     constructor(private readonly _authService: AuthService, private readonly _jwtTokensService: JwtTokensService) {}
 
-    @Get('logout/:id')
-    async logout(@Param() params: { id: number }): Promise<boolean> {
-        const { id } = params
-
-        return await this._authService.logout(id)
-    }
-
     @IsPublic()
     @Post()
     async auth(@Body() body: AuthDTO): Promise<Tokens> {
         const { email, password } = body
 
         return await this._authService.auth(email, password)
+    }
+
+    @Get('logout/:id')
+    async logout(@Param() params: { id: number }): Promise<boolean> {
+        const { id } = params
+
+        return await this._authService.logout(id)
     }
 
     @IsPublic()
