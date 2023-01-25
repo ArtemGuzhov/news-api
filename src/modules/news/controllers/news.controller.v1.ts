@@ -4,7 +4,7 @@ import { IsPublic } from '../../../shared/decorators/is-public.decorator'
 import { News } from '../services/interfaces/news.interface'
 import { NewsService } from '../services/news.service'
 import { NewsUpdateDTO } from './dtos/news-update.dto'
-import { NewsDTO } from './dtos/news.dto'
+import { NewsCreateDTO } from './dtos/news-create.dto'
 
 @Controller({
     version: '1',
@@ -29,7 +29,7 @@ export class NewsControllerV1 {
     }
 
     @Post('create')
-    async create(@GetUserId() userId: number, @Body() body: NewsDTO): Promise<News> {
+    async create(@GetUserId() userId: number, @Body() body: NewsCreateDTO): Promise<News> {
         return await this._newsService.create(userId, body)
     }
 

@@ -1,13 +1,12 @@
 import { Transform } from 'class-transformer'
 import { IsEmail, MaxLength, MinLength } from 'class-validator'
 
-export class UserDTO {
+export class UserRegisterDTO {
     @IsEmail()
     @Transform(({ value }) => value.toLowerCase())
     email: string
 
     @MinLength(5)
-    @Transform(({ value }) => value.toLowerCase())
     @MaxLength(20)
     login: string
 
