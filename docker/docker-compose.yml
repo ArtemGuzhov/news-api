@@ -34,3 +34,16 @@ services:
         restart: always
         ports:
             - ${POSTGRES_PORT}:5432
+    
+    news-api-app:
+      container_name: news-api-app
+      networks:
+        - news-api
+      build:
+        context: ../.
+        dockerfile: Dockerfile
+      restart: on-failure
+      ports:
+        - ${APP_PORT}:${APP_PORT}
+      depends_on:
+        - postgres
