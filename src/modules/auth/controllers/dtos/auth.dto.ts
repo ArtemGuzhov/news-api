@@ -7,6 +7,5 @@ export class AuthDTO {
     email: string
 
     @MinLength(8)
-    @Transform(({ value }) => value.toLowerCase())
     password: string
 }

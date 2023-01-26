@@ -59,7 +59,7 @@ export class UsersService {
         }
 
         const user = await this.findOne({ id })
-        await this._usersRepository.save({ id, ...payload })
+        await this._usersRepository.save({ id, ...user, ...payload })
 
         return { id: user.id, ...user, ...payload }
     }

@@ -30,20 +30,22 @@ export class NewsControllerV1 {
 
     @Post('create')
     async create(@GetUserId() userId: number, @Body() body: NewsCreateDTO): Promise<News> {
-        return await this._newsService.create(userId, body)
+        const { title, description, content } = body
+
+        return await this._newsService.create(userId, { title, description, content })
     }
 
     @Post('update')
-    async update(@Body() body: NewsUpdateDTO): Promise<News> {
-        const { id, ...data } = body
+    async update(@GetUserId() userId: number, @Body() body: NewsUpdateDTO): Promise<News> {
+        const { id: newsId, ...data } = body
 
-        return await this._newsService.update(id, data)
+        return await this._newsService.update(newsId, userId, data)
     }
 
     @Delete(':id')
-    async delete(@Param() params: { id: number }): Promise<boolean> {
-        const { id } = params
+    async delete(@GetUserId() userId: number, @Param() params: { id: number }): Promise<boolean> {
+        const newsId = params.id
 
-        return await this._newsService.delete(id)
+        return await this._newsService.delete(newsId, userId)
     }
 }

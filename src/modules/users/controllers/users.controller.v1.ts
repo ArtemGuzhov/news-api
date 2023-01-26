@@ -15,6 +15,8 @@ export class UsersControllerV1 {
     @IsPublic()
     @Post('register')
     async register(@Body() body: UserRegisterDTO): Promise<Omit<User, 'password' | 'refreshToken'>> {
-        return await this._usersService.create(body)
+        const { email, login, password } = body
+
+        return await this._usersService.create({ email, login, password })
     }
 }
