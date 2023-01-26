@@ -28,8 +28,16 @@ export class NewsService {
         return newsList.map(news => this._mappingNews(news))
     }
 
-    async findOne(id: number): Promise<News> {
-        const news = await this._newsRepository.findOne({ where: { id } })
+    async findOne(newsId: number, userId?: number): Promise<News> {
+        const news = await this._newsRepository.findOne({
+            where: {
+                id: newsId,
+                user: {
+                    id: userId,
+                },
+            },
+            relations: ['user'],
+        })
 
         if (news === null) throw new NotFoundException(ErrorsEnum.NEWS_NOT_FOUND)
 
@@ -44,16 +52,16 @@ export class NewsService {
         return this._mappingNews(newNews)
     }
 
-    async update(id: number, payload: NewsUpdatePayload): Promise<News> {
-        const news = await this.findOne(id)
-        await this._newsRepository.save({ id, ...payload })
+    async update(newsId: number, userId: number, payload: NewsUpdatePayload): Promise<News> {
+        const news = await this.findOne(newsId, userId)
+        await this._newsRepository.save({ id: newsId, ...payload })
 
-        return { id, ...news, publishedAt: news.publishedAt, author: news.author, ...payload }
+        return { id: newsId, ...news, ...payload, publishedAt: news.publishedAt, author: news.author }
     }
 
-    async delete(id: number): Promise<boolean> {
-        await this.findOne(id)
-        await this._newsRepository.softDelete({ id })
+    async delete(newsId: number, userId: number): Promise<boolean> {
+        await this.findOne(newsId, userId)
+        await this._newsRepository.softDelete({ id: newsId })
 
         return true
     }
