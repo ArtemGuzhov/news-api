@@ -92,13 +92,14 @@ describe('NewsService', () => {
     describe('update', () => {
         it('should return updated news', async () => {
             const { id } = newsMappedMock
+            const userId = userEntityMock.id
 
             jest.spyOn(service, 'findOne').mockResolvedValue(newsMappedMock)
             jest.spyOn(service['_newsRepository'], 'save').getMockImplementation()
 
             const { title, description, content } = updatedNewsMappedMock
 
-            const news = await service.update(id, { title, description, content })
+            const news = await service.update(id, userId, { title, description, content })
 
             expect(service.findOne).toHaveBeenCalledTimes(1)
             expect(service['_newsRepository'].save).toHaveBeenCalledTimes(1)
@@ -107,6 +108,7 @@ describe('NewsService', () => {
 
         it('throw NEWS_NOT_FOUND error', async () => {
             const { id } = newsMappedMock
+            const userId = userEntityMock.id
 
             jest.spyOn(service, 'findOne').mockImplementation(() => {
                 throw new NotFoundException('NEWS_NOT_FOUND')
@@ -114,7 +116,7 @@ describe('NewsService', () => {
 
             const { title, description, content } = updatedNewsMappedMock
 
-            expect(service.update(id, { title, description, content })).rejects.toThrow('NEWS_NOT_FOUND')
+            expect(service.update(id, userId, { title, description, content })).rejects.toThrow('NEWS_NOT_FOUND')
             expect(service.findOne).toHaveBeenCalledTimes(1)
             expect(service['_newsRepository'].save).toHaveBeenCalledTimes(0)
         })
@@ -123,11 +125,12 @@ describe('NewsService', () => {
     describe('delete', () => {
         it('should deleted news', async () => {
             const { id } = newsMappedMock
+            const userId = userEntityMock.id
 
             jest.spyOn(service, 'findOne').mockResolvedValue(newsMappedMock)
             jest.spyOn(service['_newsRepository'], 'delete').getMockImplementation()
 
-            const news = await service.delete(id)
+            const news = await service.delete(id, userId)
 
             expect(service.findOne).toHaveBeenCalledTimes(1)
             expect(service['_newsRepository'].softDelete).toHaveBeenCalledTimes(1)
@@ -136,12 +139,13 @@ describe('NewsService', () => {
 
         it('throw NEWS_NOT_FOUND error', async () => {
             const { id } = newsMappedMock
+            const userId = userEntityMock.id
 
             jest.spyOn(service, 'findOne').mockImplementation(() => {
                 throw new NotFoundException('NEWS_NOT_FOUND')
             })
 
-            expect(service.delete(id)).rejects.toThrow('NEWS_NOT_FOUND')
+            expect(service.delete(id, userId)).rejects.toThrow('NEWS_NOT_FOUND')
             expect(service.findOne).toHaveBeenCalledTimes(1)
             expect(service['_newsRepository'].softDelete).toHaveBeenCalledTimes(0)
         })
