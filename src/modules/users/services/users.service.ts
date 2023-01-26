@@ -96,8 +96,18 @@ export class UsersService {
     private _checkPayload({ email, login, password }: Omit<User, 'id' | 'refreshToken'>): void {
         if (!EmailRegExp.test(email)) throw new BadRequestException(ErrorsEnum.INCORRECT_EMAIL)
 
-        if (!LoginRegExp.test(login)) throw new BadRequestException(ErrorsEnum.INCORRECT_LOGIN)
+        if (!LoginRegExp.test(login)) {
+            throw new BadRequestException(ErrorsEnum.INCORRECT_LOGIN, {
+                description:
+                    'Login must be between 5 and 20 characters long and may contain uppercase, lowercase letters and numbers',
+            })
+        }
 
-        if (!PasswordRegExp.test(password)) throw new BadRequestException(ErrorsEnum.NOT_A_STRONG_PASSWORD)
+        if (!PasswordRegExp.test(password)) {
+            throw new BadRequestException(ErrorsEnum.NOT_A_STRONG_PASSWORD, {
+                description:
+                    'The password must be at least 8 characters long and contain at least one special character and a number and no spaces',
+            })
+        }
     }
 }
