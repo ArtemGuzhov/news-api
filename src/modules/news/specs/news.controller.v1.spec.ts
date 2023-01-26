@@ -69,12 +69,13 @@ describe('NewsControllerV1', () => {
     describe('update', () => {
         it('should return updated news', async () => {
             const { id } = newsMappedMock
+            const userId = userEntityMock.id
 
             jest.spyOn(service, 'update').mockResolvedValue(updatedNewsMappedMock)
 
             const { title, description, content } = updatedNewsMappedMock
 
-            const news = await controller.update({ id, title, description, content })
+            const news = await controller.update(userId, { id, title, description, content })
 
             expect(service.update).toHaveBeenCalledTimes(1)
             expect(news).toEqual(updatedNewsMappedMock)
@@ -84,10 +85,11 @@ describe('NewsControllerV1', () => {
     describe('delete', () => {
         it('should delete news', async () => {
             const { id } = newsMappedMock
+            const userId = userEntityMock.id
 
             jest.spyOn(service, 'delete').mockResolvedValue(true)
 
-            const news = await controller.delete({ id })
+            const news = await controller.delete(userId, { id })
 
             expect(service.delete).toHaveBeenCalledTimes(1)
             expect(news).toEqual(true)
