@@ -1,0 +1,49 @@
+version: '3.8'
+
+networks:
+    news-api:
+        name: news-api
+
+services:
+    adminer:
+        image: adminer
+        container_name: news-api-adminer
+        networks:
+            - news-api
+        environment:
+            ADMINER_PLUGINS: tables-filter tinymce
+            ADMINER_DESIGN: lucas-sandery
+        restart: always
+        ports:
+            - ${ADMINER_PORT}:8080
+        depends_on:
+            - postgres
+
+    postgres:
+        image: postgres:13.1
+        container_name: news-api-postgres
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        networks:
+            - news-api
+        volumes:
+            - ${VOLUME_PATH}/postgres:/var/lib/postgresql/data
+            - ${CONFIG_PATH}/postgresql.conf:/etc/postgresql/postgresql.conf
+        restart: always
+        ports:
+            - ${POSTGRES_PORT}:5432
+    
+    news-api-app:
+      container_name: news-api-app
+      networks:
+        - news-api
+      build:
+        context: ../.
+        dockerfile: Dockerfile
+      restart: on-failure
+      ports:
+        - ${APP_PORT}:${APP_PORT}
+      depends_on:
+        - postgres
